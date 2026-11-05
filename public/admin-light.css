@@ -1,0 +1,15 @@
+/* White + blue finishing touches; loaded after the converted stylesheets. */
+.button,.button:hover{color:#fff}
+.button.secondary{color:#0b1b3f}
+body{color:#0b1b3f}
+
+.chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:25px}
+.chart-panel .panel-heading{align-items:flex-start}
+.chart-svg{width:100%;height:auto;display:block}
+.chart-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:#51607f}
+.chart-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.chart-empty{padding:40px 0;text-align:center;color:#8190ac;font-size:11px}
+.new-badge{margin-left:6px;font-size:7px;padding:2px 5px}
+.flash.new-requests{background:#e0eaff;border-color:#1f5fe0;color:#0b1b3f}
+.flash.new-requests a{color:#1f5fe0;font-weight:600}
+@media(max-width:1000px){.chart-grid{grid-template-columns:1fr}}

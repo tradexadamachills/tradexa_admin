@@ -1,0 +1,2 @@
+@extends('layouts.auth')
+@section('content')<h1>Confirm it is you.</h1><p>This sensitive action requires a recent password confirmation.</p><form method="POST" action="{{ url('/user/confirm-password') }}">@csrf<label for="password">Staff password</label><input id="password" type="password" name="password" autocomplete="current-password" required autofocus><button class="button full">Confirm password</button></form>@endsection
