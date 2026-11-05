@@ -9,7 +9,7 @@ class DocumentReviewService
     }
     public function passes(array $decision): bool
     {
-        return ($decision['model'] ?? null) === 'easyocr-document-v1' && ($decision['classification'] ?? null) === 'document_like';
+        return in_array($decision['model'] ?? null, ['easyocr-document-v1', 'vision-document-v1'], true) && ($decision['classification'] ?? null) === 'document_like';
     }
     private function key(): string
     {

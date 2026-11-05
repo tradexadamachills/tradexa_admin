@@ -23,12 +23,13 @@ class ScreenDocumentsTest extends TestCase
         ]);
     }
 
-    private function fakeBackend(string $classification, int $modelStatus = 200): void
+    private function fakeBackend(string $classification, int $modelStatus = 200, ?array $vision = null): void
     {
         Http::fake([
             '*/rest/v1/document_intake?select*' => Http::response([[
                 'user_id' => self::USER, 'session_id' => self::SESSION, 'document_type' => 'national_id',
                 'front_path' => self::USER.'/'.self::SESSION.'/front', 'back_path' => null, 'created_at' => now()->toIso8601String(),
+                'vision_verdict' => $vision,
             ]]),
             '*/storage/v1/object/review-intake/*' => Http::response("\xFF\xD8\xFFfake-jpeg-bytes"),
             '127.0.0.1:8002/screen' => $modelStatus === 200
@@ -74,5 +75,16 @@ class ScreenDocumentsTest extends TestCase
         $this->artisan('documents:screen')->assertSuccessful();
         $this->assertFalse($this->sent(fn (Request $r) => str_contains($r->url(), 'rpc/finish_document_submission')), 'not finished');
         $this->assertFalse($this->sent(fn (Request $r) => $r->method() === 'DELETE'), 'photos kept for retry');
+    }
+
+    public function test_document_the_vision_check_accepted_is_stored_even_if_the_local_scanner_would_reject_it(): void
+    {
+        $this->fakeBackend('not_document', 200, ['category' => 'id_card', 'confidence' => 0.95, 'readable' => true]);
+        $this->artisan('documents:screen')->assertSuccessful();
+        $this->assertTrue($this->sent(fn (Request $r) => str_contains($r->url(), '/review-documents/'.self::USER.'/'.self::SESSION.'/front.enc')), 'stored for the admin');
+        $this->assertTrue($this->sent(fn (Request $r) => str_contains($r->url(), 'rpc/finish_document_submission')
+            && ($r->data()['p_result']['model'] ?? null) === 'vision-document-v1'
+            && ($r->data()['p_front'] ?? null) === self::USER.'/'.self::SESSION.'/front.enc'), 'finished as document_like');
+        $this->assertFalse($this->sent(fn (Request $r) => str_contains($r->url(), '127.0.0.1:8002')), 'local scanner not needed');
     }
 }

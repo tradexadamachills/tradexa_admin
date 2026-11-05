@@ -34,7 +34,16 @@ class ScreenDocuments extends Command
             try {
                 $front = $backend->intakeObject($job['front_path']);
                 $back = $job['back_path'] ? $backend->intakeObject($job['back_path']) : null;
-                $result = $screening->screenBytes($front, $back, $job['document_type']);
+                $vision = $job['vision_verdict'] ?? null;
+                $idLike = is_array($vision) && in_array($vision['category'] ?? null, ['id_card', 'passport', 'driving_licence'], true)
+                    && (float) ($vision['confidence'] ?? 0) >= 0.6 && ($vision['readable'] ?? false) === true;
+                // The instant vision check already decided "this is an ID". Always keep the
+                // document for the admin; the local OCR scan only runs when that check was unavailable.
+                $result = $idLike
+                    ? ['model' => 'vision-document-v1', 'classification' => 'document_like', 'document_type' => $job['document_type'],
+                        'vision' => ['category' => $vision['category'], 'confidence' => $vision['confidence']],
+                        'limitation' => 'Document-type screening only; authenticity and ownership are not established.']
+                    : $screening->screenBytes($front, $back, $job['document_type']);
                 $paths = ['front' => null, 'back' => null];
                 if ($documents->passes($result)) {
                     $paths = ['front' => "$user/$session/front.enc", 'back' => $back !== null ? "$user/$session/back.enc" : null];
