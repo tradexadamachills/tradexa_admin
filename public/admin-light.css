@@ -19,13 +19,24 @@ body{background-color:#e8f0fd}
 body::before,body::after{content:"";position:fixed;pointer-events:none;z-index:0}
 body::before{top:0;right:0;width:min(46vw,620px);height:min(28vh,240px);background:linear-gradient(225deg,rgba(47,107,255,.30),rgba(31,95,224,.03));border-bottom-left-radius:100% 100%}
 body::after{bottom:0;left:0;width:min(40vw,540px);height:min(20vh,180px);background:linear-gradient(45deg,rgba(47,107,255,.26),rgba(31,95,224,.03));border-top-right-radius:100% 100%}
-.admin-sidebar,.admin-body,.auth-page{position:relative;z-index:1}
+.admin-sidebar{z-index:2}
+.admin-body,.auth-page{position:relative;z-index:1}
 .button{background:linear-gradient(135deg,#3d7bff,#1f4fd8);border-radius:999px;border-color:transparent;box-shadow:0 8px 20px rgba(31,95,224,.35)}
 .button:hover{background:linear-gradient(135deg,#4d88ff,#2a5be6)}
 .button.secondary{background:rgba(255,255,255,.85);border:1px solid #1f5fe0;box-shadow:none;color:#1f5fe0}
 .panel,.metric-card{border-radius:18px}
 
-/* Bolder, larger base text */
-body{font-size:16px;font-weight:500}
+/* Bolder base text with calm, readable colours */
+body{font-size:14px;font-weight:500;color:#0b1b3f}
 h1,h2,h3{font-weight:800}
 strong,b,th{font-weight:700}
+
+.side-link{color:#2a3d66;font-weight:600}
+.side-link:hover{background:#e4ecfc;color:#0b1b3f}
+.side-link.active{color:#fff;background:linear-gradient(90deg,#2f6bff,#1f4fd8)}
+.side-link.active:before{background:#1f5fe0}
+.side-section,.eyebrow{color:#6b7fa6;font-weight:700}
+.control-label{color:#2a3d66}
+.admin-topbar{background:rgba(255,255,255,.85)}
+th{color:#6b7fa6}
+td{color:#1b2c52}
