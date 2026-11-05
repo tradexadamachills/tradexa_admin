@@ -41,7 +41,7 @@
   }
   function clear(message) {
     snapshot=null;$('[data-candle-chart]').replaceChildren();all('[data-spark]').forEach(e=>e.replaceChildren());
-    all('[data-price],[data-change],[data-current-price],[data-current-change],[data-ticket-price]').forEach(e=>e.textContent='--');
+    all('[data-price],[data-change],[data-current-price],[data-current-change],[data-ticket-price]').forEach(e=>e.textContent=e.matches('[data-change],[data-current-change]')?'0%':'0');
     all('[data-book-asks],[data-book-bids]').forEach(e=>e.replaceChildren());
     const state=$('[data-market-state]');state.textContent=message;state.hidden=false;all('[data-market-time]').forEach(e=>e.textContent='No current provider data');
   }
